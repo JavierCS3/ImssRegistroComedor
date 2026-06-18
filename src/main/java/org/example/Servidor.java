@@ -11,16 +11,17 @@ import java.net.InetSocketAddress;
 import com.sun.net.httpserver.*;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 
-public class Servidor{
+public class Servidor {
 
 
     public static void main(String[] args) throws Exception {
 
 
         int puerto = Integer.parseInt(
-                System.getenv().getOrDefault("PORT", "8080")
+                System.getenv().getOrDefault("PORT","8080")
         );
 
 
@@ -31,34 +32,19 @@ public class Servidor{
                 );
 
 
-        // PAGINA PRINCIPAL
+        // INDEX
+
         server.createContext("/", exchange -> {
 
 
-            InputStream file =
+            InputStream is =
                     Servidor.class
                             .getResourceAsStream("/templates/index.html");
 
 
-            if(file == null){
-
-                String error = "No existe index.html";
-
-                exchange.sendResponseHeaders(
-                        404,
-                        error.length()
-                );
-
-                exchange.getResponseBody()
-                        .write(error.getBytes());
-
-                exchange.close();
-                return;
-            }
-
-
             byte[] response =
-                    file.readAllBytes();
+                    is.readAllBytes();
+
 
 
             exchange.getResponseHeaders()
@@ -89,15 +75,14 @@ public class Servidor{
         server.createContext("/css/style.css", exchange -> {
 
 
-            InputStream file =
+            InputStream is =
                     Servidor.class
-                            .getResourceAsStream(
-                                    "/static/css/style.css"
-                            );
+                            .getResourceAsStream("/static/css/style.css");
 
 
             byte[] response =
-                    file.readAllBytes();
+                    is.readAllBytes();
+
 
 
             exchange.getResponseHeaders()
@@ -119,7 +104,6 @@ public class Servidor{
 
             exchange.close();
 
-
         });
 
 
@@ -129,15 +113,13 @@ public class Servidor{
         server.createContext("/js/registro.js", exchange -> {
 
 
-            InputStream file =
+            InputStream is =
                     Servidor.class
-                            .getResourceAsStream(
-                                    "/static/js/registro.js"
-                            );
+                            .getResourceAsStream("/static/js/registro.js");
 
 
             byte[] response =
-                    file.readAllBytes();
+                    is.readAllBytes();
 
 
 
@@ -146,7 +128,6 @@ public class Servidor{
                             "Content-Type",
                             "application/javascript"
                     );
-
 
 
             exchange.sendResponseHeaders(
@@ -159,82 +140,118 @@ public class Servidor{
                     .write(response);
 
 
-
             exchange.close();
-
 
         });
 
 
 
-        // GUARDAR REGISTRO
+        // REGISTRAR
+
 
         server.createContext("/registrar", exchange -> {
 
 
-            if(exchange.getRequestMethod()
-                    .equalsIgnoreCase("POST")){
+            try {
 
 
-                String body =
-                        new String(
-                                exchange
-                                        .getRequestBody()
-                                        .readAllBytes()
-                        );
+                if(exchange.getRequestMethod()
+                        .equalsIgnoreCase("POST")) {
 
 
 
-                System.out.println(body);
+                    String body =
+                            new String(
+                                    exchange.getRequestBody()
+                                            .readAllBytes(),
+                                    StandardCharsets.UTF_8
+                            );
+
+
+                    System.out.println(body);
 
 
 
-                String nombre =
-                        body.split("\"nombre\":\"")[1]
-                                .split("\"")[0];
+                    String nombre =
+                            body.replaceAll(".*\"nombre\":\"([^\"]+)\".*","$1");
 
 
-                String id =
-                        body.split("\"empleadoId\":\"")[1]
-                                .split("\"")[0];
-
-
-
-                Registro registro =
-                        new Registro(
-                                nombre,
-                                id
-                        );
+                    String empleadoId =
+                            body.replaceAll(".*\"empleadoId\":\"([^\"]+)\".*","$1");
 
 
 
-                RegistroDAO dao =
-                        new RegistroDAO();
+                    Registro registro =
+                            new Registro(
+                                    nombre,
+                                    empleadoId
+                            );
 
 
-                dao.guardar(registro);
+
+                    RegistroDAO dao =
+                            new RegistroDAO();
+
+
+                    dao.guardar(registro);
 
 
 
-                String respuesta =
-                        "OK";
+                    String respuesta =
+                            "{\"mensaje\":\"OK\"}";
+
+
+
+                    exchange.getResponseHeaders()
+                            .set(
+                                    "Content-Type",
+                                    "application/json"
+                            );
+
+
+                    exchange.sendResponseHeaders(
+                            200,
+                            respuesta.length()
+                    );
+
+
+                    exchange.getResponseBody()
+                            .write(
+                                    respuesta.getBytes()
+                            );
+
+
+                }
+
+
+
+            }catch(Exception e){
+
+
+                e.printStackTrace();
+
+
+                String error =
+                        "ERROR";
 
 
                 exchange.sendResponseHeaders(
-                        200,
-                        respuesta.length()
+                        500,
+                        error.length()
                 );
 
 
                 exchange.getResponseBody()
                         .write(
-                                respuesta.getBytes()
+                                error.getBytes()
                         );
 
             }
 
 
+
             exchange.close();
+
 
         });
 
@@ -243,9 +260,9 @@ public class Servidor{
         server.start();
 
 
+
         System.out.println(
-                "Servidor iniciado en puerto "
-                        + puerto
+                "Servidor iniciado puerto: " + puerto
         );
 
 
