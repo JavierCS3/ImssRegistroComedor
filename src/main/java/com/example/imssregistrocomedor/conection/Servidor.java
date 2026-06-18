@@ -16,11 +16,17 @@ public class Servidor {
     public static void main(String[] args) throws Exception {
 
 
+        int puerto = Integer.parseInt(
+                System.getenv().getOrDefault("PORT", "8080")
+        );
+
+
         HttpServer server =
                 HttpServer.create(
-                        new InetSocketAddress(8080),
+                        new InetSocketAddress(puerto),
                         0
                 );
+
 
 
         // INDEX
