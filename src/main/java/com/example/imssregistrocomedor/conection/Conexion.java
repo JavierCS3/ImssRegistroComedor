@@ -17,10 +17,14 @@ public class Conexion {
 
     public static MongoDatabase conectar() {
 
+        System.out.println("ENTRO A CONEXION V2");
+
+
         try {
 
             System.out.println("Creando cliente Mongo");
 
+            System.setProperty("org.mongodb.driver.level", "DEBUG");
 
             cliente = MongoClients.create(URL);
 

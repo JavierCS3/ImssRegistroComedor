@@ -252,6 +252,12 @@ public class Servidor {
                         new RegistroDAO();
 
 
+                System.out.println("ANTES DAO");
+
+                dao.guardar(registro);
+
+                System.out.println("DESPUES DAO");
+
 
                 dao.guardar(registro);
 
