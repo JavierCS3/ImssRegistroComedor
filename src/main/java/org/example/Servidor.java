@@ -21,7 +21,7 @@ public class Servidor {
 
 
         int puerto = Integer.parseInt(
-                System.getenv().getOrDefault("PORT","8080")
+                System.getenv().getOrDefault("PORT", "8080")
         );
 
 
@@ -37,34 +37,39 @@ public class Servidor {
         server.createContext("/", exchange -> {
 
 
-            InputStream is =
-                    Servidor.class
-                            .getResourceAsStream("/templates/index.html");
+            try {
+
+                InputStream is =
+                        Servidor.class
+                                .getResourceAsStream("/templates/index.html");
 
 
-            byte[] response =
-                    is.readAllBytes();
+                byte[] response =
+                        is.readAllBytes();
 
 
-
-            exchange.getResponseHeaders()
-                    .set(
-                            "Content-Type",
-                            "text/html"
-                    );
-
-
-            exchange.sendResponseHeaders(
-                    200,
-                    response.length
-            );
+                exchange.getResponseHeaders()
+                        .set(
+                                "Content-Type",
+                                "text/html; charset=UTF-8"
+                        );
 
 
-            exchange.getResponseBody()
-                    .write(response);
+                exchange.sendResponseHeaders(
+                        200,
+                        response.length
+                );
 
 
-            exchange.close();
+                exchange.getResponseBody()
+                        .write(response);
+
+
+            } finally {
+
+                exchange.close();
+
+            }
 
         });
 
@@ -75,36 +80,45 @@ public class Servidor {
         server.createContext("/css/style.css", exchange -> {
 
 
-            InputStream is =
-                    Servidor.class
-                            .getResourceAsStream("/static/css/style.css");
+            try {
+
+                InputStream is =
+                        Servidor.class
+                                .getResourceAsStream("/static/css/style.css");
 
 
-            byte[] response =
-                    is.readAllBytes();
+                byte[] response =
+                        is.readAllBytes();
 
 
 
-            exchange.getResponseHeaders()
-                    .set(
-                            "Content-Type",
-                            "text/css"
-                    );
+                exchange.getResponseHeaders()
+                        .set(
+                                "Content-Type",
+                                "text/css"
+                        );
 
 
-            exchange.sendResponseHeaders(
-                    200,
-                    response.length
-            );
+                exchange.sendResponseHeaders(
+                        200,
+                        response.length
+                );
 
 
-            exchange.getResponseBody()
-                    .write(response);
+                exchange.getResponseBody()
+                        .write(response);
 
 
-            exchange.close();
+
+            } finally {
+
+                exchange.close();
+
+            }
+
 
         });
+
 
 
 
@@ -113,36 +127,48 @@ public class Servidor {
         server.createContext("/js/registro.js", exchange -> {
 
 
-            InputStream is =
-                    Servidor.class
-                            .getResourceAsStream("/static/js/registro.js");
+            try {
 
 
-            byte[] response =
-                    is.readAllBytes();
+                InputStream is =
+                        Servidor.class
+                                .getResourceAsStream("/static/js/registro.js");
+
+
+                byte[] response =
+                        is.readAllBytes();
 
 
 
-            exchange.getResponseHeaders()
-                    .set(
-                            "Content-Type",
-                            "application/javascript"
-                    );
+                exchange.getResponseHeaders()
+                        .set(
+                                "Content-Type",
+                                "application/javascript"
+                        );
 
 
-            exchange.sendResponseHeaders(
-                    200,
-                    response.length
-            );
+
+                exchange.sendResponseHeaders(
+                        200,
+                        response.length
+                );
 
 
-            exchange.getResponseBody()
-                    .write(response);
+                exchange.getResponseBody()
+                        .write(response);
 
 
-            exchange.close();
+
+            } finally {
+
+                exchange.close();
+
+            }
+
 
         });
+
+
 
 
 
@@ -159,19 +185,25 @@ public class Servidor {
                         .equalsIgnoreCase("POST")){
 
 
-                    exchange.sendResponseHeaders(405,0);
-                    exchange.close();
+                    exchange.sendResponseHeaders(
+                            405,
+                            0
+                    );
+
                     return;
 
                 }
 
 
 
+
                 String body =
                         new String(
                                 exchange.getRequestBody()
-                                        .readAllBytes()
+                                        .readAllBytes(),
+                                "UTF-8"
                         );
+
 
 
                 System.out.println("JSON recibido:");
@@ -186,6 +218,7 @@ public class Servidor {
                         );
 
 
+
                 String empleadoId =
                         body.replaceAll(
                                 ".*\"empleadoId\":\"([^\"]+)\".*",
@@ -198,9 +231,11 @@ public class Servidor {
                         "Nombre: " + nombre
                 );
 
+
                 System.out.println(
                         "Empleado: " + empleadoId
                 );
+
 
 
 
@@ -212,45 +247,26 @@ public class Servidor {
 
 
 
+
                 RegistroDAO dao =
                         new RegistroDAO();
 
 
 
-                try {
-
-                    dao.guardar(registro);
-
-                    String respuesta = "OK";
-
-                    exchange.sendResponseHeaders(
-                            200,
-                            respuesta.length()
-                    );
-
-                    exchange.getResponseBody()
-                            .write(respuesta.getBytes());
-
-                } catch (Exception e) {
-
-                    e.printStackTrace();
-
-                    String error = "ERROR";
-
-                    exchange.sendResponseHeaders(
-                            500,
-                            error.length()
-                    );
-
-                    exchange.getResponseBody()
-                            .write(error.getBytes());
-
-                }
+                dao.guardar(registro);
 
 
 
                 String respuesta =
-                        "Guardado";
+                        "OK";
+
+
+
+                exchange.getResponseHeaders()
+                        .set(
+                                "Content-Type",
+                                "text/plain; charset=UTF-8"
+                        );
 
 
 
@@ -260,6 +276,7 @@ public class Servidor {
                 );
 
 
+
                 exchange.getResponseBody()
                         .write(
                                 respuesta.getBytes()
@@ -267,7 +284,13 @@ public class Servidor {
 
 
 
+                System.out.println("Respuesta enviada");
+
+
+
+
             }catch(Exception e){
+
 
 
                 System.out.println(
@@ -280,7 +303,7 @@ public class Servidor {
 
 
                 String error =
-                        e.toString();
+                        "ERROR";
 
 
 
@@ -290,19 +313,26 @@ public class Servidor {
                 );
 
 
+
                 exchange.getResponseBody()
                         .write(
                                 error.getBytes()
                         );
 
+
+
+            }finally{
+
+
+                exchange.close();
+
+
             }
 
 
 
-            exchange.close();
-
-
         });
+
 
 
 
