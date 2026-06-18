@@ -1,15 +1,19 @@
 package org.example;
 
+
 import com.example.imssregistrocomedor.controller.Registro;
 import com.example.imssregistrocomedor.dao.RegistroDAO;
 import com.sun.net.httpserver.*;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.nio.file.Files;
+
+import com.sun.net.httpserver.*;
+
+import java.io.*;
 
 
-public class Servidor {
+public class Servidor{
 
 
     public static void main(String[] args) throws Exception {
@@ -27,23 +31,41 @@ public class Servidor {
                 );
 
 
-
-        // INDEX
+        // PAGINA PRINCIPAL
         server.createContext("/", exchange -> {
 
 
-            File file =
-                    new File(
-                            "src/main/resources/templates/index.html"
-                    );
+            InputStream file =
+                    Servidor.class
+                            .getResourceAsStream("/templates/index.html");
+
+
+            if(file == null){
+
+                String error = "No existe index.html";
+
+                exchange.sendResponseHeaders(
+                        404,
+                        error.length()
+                );
+
+                exchange.getResponseBody()
+                        .write(error.getBytes());
+
+                exchange.close();
+                return;
+            }
 
 
             byte[] response =
-                    Files.readAllBytes(file.toPath());
+                    file.readAllBytes();
 
 
             exchange.getResponseHeaders()
-                    .set("Content-Type","text/html");
+                    .set(
+                            "Content-Type",
+                            "text/html"
+                    );
 
 
             exchange.sendResponseHeaders(
@@ -55,6 +77,7 @@ public class Servidor {
             exchange.getResponseBody()
                     .write(response);
 
+
             exchange.close();
 
         });
@@ -65,14 +88,16 @@ public class Servidor {
 
         server.createContext("/css/style.css", exchange -> {
 
-            File file =
-                    new File(
-                            "src/main/resources/static/css/style.css"
-                    );
+
+            InputStream file =
+                    Servidor.class
+                            .getResourceAsStream(
+                                    "/static/css/style.css"
+                            );
 
 
             byte[] response =
-                    Files.readAllBytes(file.toPath());
+                    file.readAllBytes();
 
 
             exchange.getResponseHeaders()
@@ -91,7 +116,9 @@ public class Servidor {
             exchange.getResponseBody()
                     .write(response);
 
+
             exchange.close();
+
 
         });
 
@@ -102,14 +129,16 @@ public class Servidor {
         server.createContext("/js/registro.js", exchange -> {
 
 
-            File file =
-                    new File(
-                            "src/main/resources/static/js/registro.js"
-                    );
+            InputStream file =
+                    Servidor.class
+                            .getResourceAsStream(
+                                    "/static/js/registro.js"
+                            );
 
 
             byte[] response =
-                    Files.readAllBytes(file.toPath());
+                    file.readAllBytes();
+
 
 
             exchange.getResponseHeaders()
@@ -117,6 +146,7 @@ public class Servidor {
                             "Content-Type",
                             "application/javascript"
                     );
+
 
 
             exchange.sendResponseHeaders(
@@ -129,7 +159,9 @@ public class Servidor {
                     .write(response);
 
 
+
             exchange.close();
+
 
         });
 
@@ -144,22 +176,18 @@ public class Servidor {
                     .equalsIgnoreCase("POST")){
 
 
-                InputStream is =
-                        exchange.getRequestBody();
-
-
                 String body =
                         new String(
-                                is.readAllBytes()
+                                exchange
+                                        .getRequestBody()
+                                        .readAllBytes()
                         );
+
 
 
                 System.out.println(body);
 
 
-
-                // ejemplo:
-                // {"nombre":"Javier","empleadoId":"123"}
 
                 String nombre =
                         body.split("\"nombre\":\"")[1]
@@ -177,6 +205,7 @@ public class Servidor {
                                 nombre,
                                 id
                         );
+
 
 
                 RegistroDAO dao =
@@ -202,7 +231,6 @@ public class Servidor {
                                 respuesta.getBytes()
                         );
 
-
             }
 
 
@@ -216,7 +244,8 @@ public class Servidor {
 
 
         System.out.println(
-                "Servidor iniciado en http://localhost:8080"
+                "Servidor iniciado en puerto "
+                        + puerto
         );
 
 

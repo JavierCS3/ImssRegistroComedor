@@ -48,7 +48,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                org.example.Servidor
+                                com.example.imssregistrocomedor.conection.Servidor
                             </mainClass>
                         </manifest>
                     </archive>
@@ -56,8 +56,20 @@
 
             </plugin>
 
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+
+                <configuration>
+                    <release>21</release>
+                </configuration>
+
+            </plugin>
+
+
         </plugins>
 
     </build>
-
 </project>
