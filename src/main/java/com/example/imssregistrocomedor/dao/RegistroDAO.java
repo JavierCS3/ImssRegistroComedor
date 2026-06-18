@@ -13,26 +13,37 @@ public class RegistroDAO {
 
     public void guardar(Registro r){
 
-
-        MongoDatabase db =
-                Conexion.conectar();
+        try{
 
 
-        MongoCollection<Document> coleccion =
-                db.getCollection("asistencias");
+            MongoDatabase db =
+                    Conexion.conectar();
 
 
-        Document doc = new Document();
-
-        doc.append("nombre", r.getNombre());
-        doc.append("empleadoId", r.getEmpleadoId());
-        doc.append("fecha", r.getFecha().toString());
+            MongoCollection<Document> coleccion =
+                    db.getCollection("asistencias");
 
 
-        coleccion.insertOne(doc);
+            Document doc =
+                    new Document()
+                            .append("nombre", r.getNombre())
+                            .append("empleadoId", r.getEmpleadoId())
+                            .append("fecha", r.getFecha().toString());
 
 
-        System.out.println("Guardado");
+            coleccion.insertOne(doc);
+
+
+            System.out.println("Guardado");
+
+
+        }catch(Exception e){
+
+            e.printStackTrace();
+
+            throw e;
+
+        }
 
     }
 

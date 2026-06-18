@@ -232,7 +232,8 @@ public class Servidor {
 
 
                 String error =
-                        "ERROR";
+                        e.getMessage();
+
 
 
                 exchange.sendResponseHeaders(
