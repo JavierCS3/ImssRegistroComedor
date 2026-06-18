@@ -1,0 +1,100 @@
+:root{
+    --imss-green:#006847;
+    --imss-green-dark:#004f35;
+    --background:#f5f7fa;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",sans-serif;
+}
+
+body{
+    background:var(--background);
+    min-height:100vh;
+}
+
+.header{
+    background:linear-gradient(
+            135deg,
+            var(--imss-green),
+            var(--imss-green-dark)
+    );
+
+    color:white;
+    text-align:center;
+    padding:25px;
+}
+
+.container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:80vh;
+    padding:20px;
+}
+
+.card{
+    background:white;
+    width:100%;
+    max-width:450px;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+}
+
+.card h2{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.descripcion{
+    text-align:center;
+    color:#666;
+    margin-bottom:25px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+input{
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    width:100%;
+    margin-top:20px;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:#006847;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#00553a;
+}
+
+.mensaje{
+    margin-top:20px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.success{
+    color:#198754;
+}
+
+.error{
+    color:#dc3545;
+}

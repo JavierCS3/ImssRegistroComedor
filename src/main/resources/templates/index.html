@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Entrada - Comedor IMSS</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="header">
+    <h1>Registro de Comedor</h1>
+    <p>Instituto Mexicano del Seguro Social</p>
+</header>
+
+<main class="container">
+
+    <div class="card">
+
+        <h2>Registrar Entrada</h2>
+
+        <p class="descripcion">
+            Ingrese su nombre y número de empleado para registrar su acceso al comedor.
+        </p>
+
+        <form id="registroForm">
+
+            <div class="form-group">
+                <label>Nombre completo</label>
+
+                <input
+                        type="text"
+                        id="nombreEmpleado"
+                        placeholder="Ejemplo: Juan Perez"
+                        required>
+
+                <label>Número de empleado</label>
+
+                <input
+                        type="text"
+                        id="empleadoId"
+                        placeholder="Ejemplo: EMP001"
+                        required>
+            </div>
+
+            <button type="submit">
+                Registrar Entrada
+            </button>
+
+        </form>
+
+        <div id="mensaje" class="mensaje"></div>
+
+    </div>
+
+</main>
+
+<script src="/js/registro.js"></script>
+</body>
+</html>
