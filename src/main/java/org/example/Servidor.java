@@ -1,4 +1,4 @@
-package com.example.imssregistrocomedor.conection;
+package org.example;
 
 import com.example.imssregistrocomedor.controller.Registro;
 import com.example.imssregistrocomedor.dao.RegistroDAO;
@@ -6,7 +6,6 @@ import com.sun.net.httpserver.*;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 
