@@ -155,84 +155,104 @@ public class Servidor {
             try {
 
 
-                if(exchange.getRequestMethod()
-                        .equalsIgnoreCase("POST")) {
+                if(!exchange.getRequestMethod()
+                        .equalsIgnoreCase("POST")){
 
 
-
-                    String body =
-                            new String(
-                                    exchange.getRequestBody()
-                                            .readAllBytes(),
-                                    StandardCharsets.UTF_8
-                            );
-
-
-                    System.out.println(body);
-
-
-
-                    String nombre =
-                            body.replaceAll(".*\"nombre\":\"([^\"]+)\".*","$1");
-
-
-                    String empleadoId =
-                            body.replaceAll(".*\"empleadoId\":\"([^\"]+)\".*","$1");
-
-
-
-                    Registro registro =
-                            new Registro(
-                                    nombre,
-                                    empleadoId
-                            );
-
-
-
-                    RegistroDAO dao =
-                            new RegistroDAO();
-
-
-                    dao.guardar(registro);
-
-
-
-                    String respuesta =
-                            "{\"mensaje\":\"OK\"}";
-
-
-
-                    exchange.getResponseHeaders()
-                            .set(
-                                    "Content-Type",
-                                    "application/json"
-                            );
-
-
-                    exchange.sendResponseHeaders(
-                            200,
-                            respuesta.length()
-                    );
-
-
-                    exchange.getResponseBody()
-                            .write(
-                                    respuesta.getBytes()
-                            );
-
+                    exchange.sendResponseHeaders(405,0);
+                    exchange.close();
+                    return;
 
                 }
+
+
+
+                String body =
+                        new String(
+                                exchange.getRequestBody()
+                                        .readAllBytes()
+                        );
+
+
+                System.out.println("JSON recibido:");
+                System.out.println(body);
+
+
+
+                String nombre =
+                        body.replaceAll(
+                                ".*\"nombre\":\"([^\"]+)\".*",
+                                "$1"
+                        );
+
+
+                String empleadoId =
+                        body.replaceAll(
+                                ".*\"empleadoId\":\"([^\"]+)\".*",
+                                "$1"
+                        );
+
+
+
+                System.out.println(
+                        "Nombre: " + nombre
+                );
+
+                System.out.println(
+                        "Empleado: " + empleadoId
+                );
+
+
+
+                Registro registro =
+                        new Registro(
+                                nombre,
+                                empleadoId
+                        );
+
+
+
+                RegistroDAO dao =
+                        new RegistroDAO();
+
+
+
+                dao.guardar(registro);
+
+
+
+                String respuesta =
+                        "Guardado";
+
+
+
+                exchange.sendResponseHeaders(
+                        200,
+                        respuesta.length()
+                );
+
+
+                exchange.getResponseBody()
+                        .write(
+                                respuesta.getBytes()
+                        );
 
 
 
             }catch(Exception e){
 
 
+                System.out.println(
+                        "ERROR EN REGISTRO"
+                );
+
+
                 e.printStackTrace();
 
 
+
                 String error =
-                        e.getMessage();
+                        e.toString();
 
 
 
