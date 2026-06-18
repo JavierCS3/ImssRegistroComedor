@@ -217,7 +217,35 @@ public class Servidor {
 
 
 
-                dao.guardar(registro);
+                try {
+
+                    dao.guardar(registro);
+
+                    String respuesta = "OK";
+
+                    exchange.sendResponseHeaders(
+                            200,
+                            respuesta.length()
+                    );
+
+                    exchange.getResponseBody()
+                            .write(respuesta.getBytes());
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    String error = "ERROR";
+
+                    exchange.sendResponseHeaders(
+                            500,
+                            error.length()
+                    );
+
+                    exchange.getResponseBody()
+                            .write(error.getBytes());
+
+                }
 
 
 

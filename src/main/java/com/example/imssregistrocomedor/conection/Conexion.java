@@ -21,21 +21,19 @@ public class Conexion {
 
             System.out.println("Creando cliente Mongo");
 
-            cliente = MongoClients.create(URL);
+            MongoClient cliente =
+                    MongoClients.create(URL);
 
             System.out.println("Cliente creado");
 
             MongoDatabase db =
                     cliente.getDatabase("comedor_imss");
 
-            System.out.println("Base obtenida");
-
             return db;
 
         } catch (Exception e) {
 
-            System.out.println("ERROR MONGO:");
-
+            System.out.println("ERROR MONGO");
             e.printStackTrace();
 
             throw e;
