@@ -8,7 +8,7 @@ public class Conexion {
 
 
     private static final String URL =
-            "mongodb+srv://javierefrencs_db_user:J123456@imssregistro.kau1t1i.mongodb.net/?appName=ImssRegistro";
+            "mongodb+srv://javierefrencs_db_user:J123456@imssregistro.kau1t1i.mongodb.net/comedor_imss?retryWrites=true&w=majority&serverSelectionTimeoutMS=10000&connectTimeoutMS=10000";
 
 
     private static MongoClient cliente;
@@ -21,19 +21,23 @@ public class Conexion {
 
             System.out.println("Creando cliente Mongo");
 
-            MongoClient cliente =
-                    MongoClients.create(URL);
+            MongoClient cliente = MongoClients.create(URL);
 
             System.out.println("Cliente creado");
 
-            MongoDatabase db =
-                    cliente.getDatabase("comedor_imss");
+            MongoDatabase db = cliente.getDatabase("comedor_imss");
+
+            System.out.println("Probando conexión...");
+
+            db.runCommand(new org.bson.Document("ping", 1));
+
+            System.out.println("PING OK");
 
             return db;
 
         } catch (Exception e) {
 
-            System.out.println("ERROR MONGO");
+            System.out.println("ERROR:");
             e.printStackTrace();
 
             throw e;
