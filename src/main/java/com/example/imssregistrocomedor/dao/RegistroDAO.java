@@ -17,8 +17,13 @@ public class RegistroDAO {
         System.out.println("Entrando DAO");
 
 
-        MongoDatabase db =
-                Conexion.conectar();
+        MongoDatabase db = null;
+
+        System.out.println("LLAMANDO CONEXION");
+
+        db = Conexion.conectar();
+
+        System.out.println("REGRESO DE CONEXION");
 
 
         System.out.println("Base conectada");
